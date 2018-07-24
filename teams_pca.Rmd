@@ -1,0 +1,107 @@
+---
+title: "teams_pca"
+author: "Yoon Sung Hong"
+date: "10/5/2017"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#loading some of the packages that may be needed for the project
+library(readr)
+library(dplyr)
+library(ggplot2)
+#setting wd
+setwd("~/previous-projects/R-projects/nba_teams_pca/")
+#loading data frames
+dat <- read.csv("data/nba2017-teams.csv")
+str(dat)
+```
+
+## Ranking of Teams
+
+```{r}
+#ranking teams according to salary
+dat <- transform(dat, team = reorder(team, salary))
+ggplot(data = dat, aes(x = team, y = salary)) + 
+  geom_bar(stat = 'identity') + 
+  coord_flip() + 
+  geom_hline(aes(yintercept = mean(dat$salary)), color = "orange") + labs(title = "NBA Teams Ranked by Total Salary", y = "Salary (in millions)", x = "Team" )
+```
+```{r}
+#ranking teams according to total points
+dat <- transform(dat, team = reorder(team, points))
+ggplot(data = dat, aes(x = team, y = points)) +
+  geom_bar(stat = 'identity') + 
+  coord_flip() + 
+  geom_hline(aes(yintercept = mean(dat$points)), color = "orange") + labs(title = "NBA Teams Ranked by Total Points", y = "Total Points", x = "Team" )
+```
+```{r}
+#ranking teams according to efficiency
+dat <- transform(dat, team = reorder(team, efficiency))
+ggplot(data = dat, aes(x = team, y = efficiency)) + 
+  geom_bar(stat = 'identity') + coord_flip() + geom_hline(aes(yintercept = mean(dat$efficiency)),color = "orange") + labs(title = "NBA Teams Ranked by Total Efficiency", y = "Total Efficiency", x = "Team" )
+```
+
+###Comments
+>It seems to be difficult to find a straight correlation between salary and points, as well as salary and efficiency. There are certain teams with lower total salary who seem to be scoring a lot of points (like Phoenix). However, it is generally clear to say that teams with higher points scored have relatively high efficiencies (although this correlation is not very strong).
+>
+
+## Principal Components Analysis (PCA)
+
+```{r}
+#Creating principal components
+dat.pca <- select(dat, 
+                  c(points3, points2, free_throws,
+                    off_rebounds, def_rebounds, assists, 
+                    steals, blocks, turnovers, fouls))
+pca <- prcomp(dat.pca, scale. = TRUE)
+pca
+#creating a data frame with the eigenvalues
+eigs <- data.frame(
+  eigenvalue = round(pca$sdev^2, 4),
+  prop = round((pca$sdev^2)/(sum(pca$sdev^2)), 4)
+)
+eigs$cumprop <- cumsum(eigs$prop)
+eigs
+```
+```{r}
+#PCA scatterplots
+pca.plot <- as.data.frame(pca$x)
+team <- dat$team
+pca.plot <- cbind(pca.plot, team)
+ggplot(data = pca.plot, aes(x = PC1, y = PC2)) + geom_text(label = pca.plot$team) + ggtitle("PCA plot (PC1 and PC2)")
+```
+```{r}
+#interpreting the PCs 
+cor(pca.plot$PC1, dat$off_rebounds)
+cor(pca.plot$PC1, dat$points3)
+cor(pca.plot$PC1, dat$points2)
+cor(pca.plot$PC1, dat$assists)
+cor(pca.plot$PC2, dat$points3)
+cor(pca.plot$PC2, dat$off_rebounds)
+cor(pca.plot$PC2, dat$points2)
+cor(pca.plot$PC2, dat$assists)
+#another way to see the significance of the PCs
+plot(pca)
+```
+
+>It seems to be that points3 variable shows a stronger correlation with PC2 than that of PC1. However, it seems to be that overall, PC1 shows the strongest correlation to different variables. This is also shown by the variance plot shown above.
+
+
+```{r}
+#index based on PC1
+pca.plot$pc1_rs <- 100*(pca.plot$PC1 - min(pca.plot$PC1))/(max(pca.plot$PC1)-min(pca.plot$PC1))
+pca.plot <- transform(pca.plot, team = reorder(team, pc1_rs))
+ggplot(data = pca.plot, aes(x = team, y = pc1_rs)) + 
+  geom_bar(stat = 'identity') + 
+  coord_flip() + 
+  labs(title = "NBA Teams Ranked by scaled PC1", y = "First PC (scaled from 0 to 100)", x = "Team" )
+```
+
+>As PC1 index represents all variables in consideration from original dataset most significantly of all PCs, we can observe that GSW dominates the NBA in overall statistics and performances over all teams. This indicates that their weakest area has small/no difference in statistics to their strongest area (i.e. they dominate the stats in 3pt shooting, but they also dominate the stats in 2pt shooting and etc). On the other hand, in SAC's case, it can be seen that their almost all their varaibles represented from the dataset has almost no visible difference compared to their weakest area/variable, leading to the inexistent value of scaled PC1 value. 
+
+

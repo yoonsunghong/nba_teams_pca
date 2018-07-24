@@ -1,0 +1,21 @@
+     team             experience         salary          points3          points2    
+ Length:30          Min.   : 34.00   Min.   : 55.78   Min.   : 513.0   Min.   :1769  
+ Class :character   1st Qu.: 56.00   1st Qu.: 84.59   1st Qu.: 617.0   1st Qu.:2115  
+ Mode  :character   Median : 63.00   Median : 91.41   Median : 704.0   Median :2252  
+                    Mean   : 68.73   Mean   : 90.95   Mean   : 730.7   Mean   :2242  
+                    3rd Qu.: 73.25   3rd Qu.:101.87   3rd Qu.: 805.8   3rd Qu.:2413  
+                    Max.   :128.00   Max.   :125.79   Max.   :1141.0   Max.   :2638  
+  free_throws       points      off_rebounds    def_rebounds     assists    
+ Min.   : 998   Min.   :6348   Min.   :524.0   Min.   :1878   Min.   :1291  
+ 1st Qu.:1238   1st Qu.:7561   1st Qu.:699.2   1st Qu.:2435   1st Qu.:1546  
+ Median :1384   Median :8164   Median :762.5   Median :2536   Median :1738  
+ Mean   :1359   Mean   :8035   Mean   :768.7   Mean   :2524   Mean   :1732  
+ 3rd Qu.:1492   3rd Qu.:8452   3rd Qu.:865.8   3rd Qu.:2644   3rd Qu.:1858  
+ Max.   :1605   Max.   :9473   Max.   :961.0   Max.   :2854   Max.   :2475  
+     steals          blocks        turnovers          fouls        efficiency   
+ Min.   :475.0   Min.   :234.0   Min.   : 703.0   Min.   :1164   Min.   :125.1  
+ 1st Qu.:544.8   1st Qu.:311.0   1st Qu.: 973.5   1st Qu.:1355   1st Qu.:143.8  
+ Median :590.0   Median :351.5   Median :1021.5   Median :1519   Median :146.7  
+ Mean   :583.3   Mean   :360.3   Mean   :1013.5   Mean   :1496   Mean   :149.0  
+ 3rd Qu.:612.0   3rd Qu.:389.5   3rd Qu.:1087.2   3rd Qu.:1599   3rd Qu.:152.9  
+ Max.   :779.0   Max.   :551.0   Max.   :1184.0   Max.   :1886   Max.   :177.9  
